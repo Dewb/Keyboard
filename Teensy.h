@@ -17,7 +17,9 @@ int fpc_map[] = {23, 0, 22, 1, 21, 2, 20, 3, 19, 4, 18, 5, 17, 6, 24, 7, 25, 8, 
 
 #define TEENSYLC
 // Load an array with the Teensy LC I/O numbers that correspond to FPC pins 1 thru 26.
-int fpc_map[] = {23, 0, 22, 1, 24, 2, 21, 3, 25, 4, 20, 5, 19, 6, 18, 7, 17, 8, 16, 9, 15, 10, 14, 11, 26, 12};
+//int fpc_map[] = {23, 0, 22, 1, 24, 2, 21, 3, 25, 4, 20, 5, 19, 6, 18, 7, 17, 8, 16, 9, 15, 10, 14, 11, 26, 12};
+int fpc_map[] = {1, 2, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
+
 // Maximum FPC pin number that can be soldered to this microcontroller
 #define HW_MAX_PIN 26
 

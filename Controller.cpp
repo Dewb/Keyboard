@@ -38,6 +38,11 @@
 // Utility functions
 #include "utility.h"
 
+// Number of scans that have passed since last change in heartbeat
+int controller_scan_count = 0;
+
+// State of the microcontroller's built-in LED; this should switch once every 10 scans.
+bool controller_heartbeat_state = LOW;
 
 // Convenience constants
 #define TRUE (1==1)
@@ -97,10 +102,19 @@ void send_keys() {
   Keyboard.set_key4(slots[3]);
   Keyboard.set_key5(slots[4]);
   Keyboard.set_key6(slots[5]);
+
+  int state = HIGH;
+  for (int index = 0; index < 6; index++) {
+    if (slots[index] != 0) {
+      state = LOW;
+    }
+  }
+  set_pin(LED_BUILTIN, OUTPUT, state);
 }
 
 //----------------------------------Setup-------------------------------------------
 void controller_init(int rows, int cols, int* row_pins, int* col_pins) {
+  
   old_key = (bool*) malloc(rows * cols * sizeof(bool));
   for (int col = 0; col < cols; col++) {
     // Set column pin to input_pullup / high
@@ -116,6 +130,7 @@ void controller_init(int rows, int cols, int* row_pins, int* col_pins) {
       old_key[index] = FALSE;
     }
   }
+
 }
 
 // Initialize Fn key to 0 = "not pressed"
@@ -143,8 +158,8 @@ void controller_loop(int rows, int cols, int* normal, int* modifier, int* fn_key
       int index = row * cols + col;
       // Keys are active LOW
       boolean down = digitalRead(col_pins[col]) == LOW;
-
-      boolean just_pressed = down && old_key[index];
+      
+      boolean just_pressed = down && !old_key[index];
       boolean just_released = !down && old_key[index];
 
       // In whatever case, track the state of the matrix.
@@ -211,11 +226,15 @@ void controller_loop(int rows, int cols, int* normal, int* modifier, int* fn_key
 
     }
     // De-activate Row (send it to hi-impedance)
-    set_pin(row_pins[row], INPUT, HIGH);
+    set_pin(row_pins[row], INPUT_PULLUP, HIGH);
   }
+  
+  send_keys();
+  
   // Scan complete; send scanned state.
   Keyboard.send_now();
 
+/*
   // Switch on the LED on the Teensy for Caps Lock based on bit 1 in
   // the keyboard_leds variable controlled by the USB host computer
   #ifdef CAPS_LED
@@ -228,6 +247,16 @@ void controller_loop(int rows, int cols, int* normal, int* modifier, int* fn_key
       set_pin(CAPS_LED, OUTPUT, LOW);
     }
   #endif
+*/
 
+/*
+  if (controller_scan_count == 10) {
+    controller_heartbeat_state = controller_heartbeat_state == HIGH ? LOW : HIGH;
+    controller_scan_count = 0;
+    set_pin(LED_BUILTIN, OUTPUT, controller_heartbeat_state);
+  } else {
+    controller_scan_count++;
+  }
+*/
   delay(25);
 }

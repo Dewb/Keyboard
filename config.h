@@ -8,7 +8,7 @@
 #define INITIAL_DELAY 5000
 
 // Maximum time for pins to be joined before it's considered a short
-#define MAX_HOLD_TIME 1000
+#define MAX_HOLD_TIME 2000
 
 // the first pin to be tested on the FPC connector (usually pin 1)
 #define MIN_PIN 1
@@ -16,7 +16,7 @@
 
 // the keyboard FPC connector pin count. If set to 34, unsolder the LED or
 // the code won't work
-#define MAX_PIN 33
+#define MAX_PIN 17
 
 // If your keyboard has diodes, you must pay attention to the order of the
 // two pins that are reported by the Teensy. The code performs a bottom up
